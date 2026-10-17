@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chúc Mừng Ngày Phụ Nữ Việt Nam 20/10</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="shortcut icon" type="image/x-icon" href="icon.jpg"/>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Montserrat:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-pink: #ff758c;
+            --secondary-pink: #ff7eb3;
+            --deep-purple: #2c003e;
+            --violet-glow: #9b51e0;
+            --rose-red: #e63946;
+            --gold-accent: #ffd700;
+            --gold-gradient: linear-gradient(135deg, #ffe066, #f39c12);
+            --glass-bg: rgba(255, 255, 255, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.25);
+            --orbit-radius: 170px; /* Bán kính vòng tròn ảnh trên màn hình lớn */
+            --img-size: 85px;       /* Kích thước ảnh trong vòng tròn */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #1a0022 0%, #3d0c45 40%, #6b114d 70%, #2a0826 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            overflow-x: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Canvas nền hiệu ứng hạt/cánh hoa */
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px 15px 60px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-top: 15px;
+            margin-bottom: 25px;
+            animation: fadeInDown 1.2s ease-out;
+        }
+
+        .sub-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--secondary-pink);
+            text-shadow: 0 0 10px rgba(255, 126, 179, 0.5);
+            margin-bottom: 5px;
+        }
+
+        .main-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #fff, #ff7eb3, #ffd700, #fff);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 6s ease infinite;
+            text-shadow: 0 0 20px rgba(230, 57, 70, 0.3);
+            line-height: 1.3;
+            letter-spacing: 1px;
+        }
+
+        .divider {
+            width: 120px;
+            height: 3px;
+            background: var(--gold-gradient);
+            margin: 15px auto 0 auto;
+            border-radius: 3px;
+            box-shadow: 0 0 10px var(--gold-accent);
+        }
+
+        .orbit-section {
+            position: relative;
+            width: 100%;
+            height: 480px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        /* Tâm vòng tròn (Bông hoa & Chữ 20/10 phát sáng) */
+        .center-core {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 117, 140, 0.3) 0%, rgba(155, 81, 224, 0.1) 70%);
+            border: 2px solid rgba(255, 215, 0, 0.6);
+            box-shadow: 0 0 30px rgba(255, 117, 140, 0.8), inset 0 0 15px rgba(255, 215, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+            animation: pulseGlow 3s ease-in-out infinite alternate;
+            backdrop-filter: blur(4px);
+        }
+
+        .center-core .heart-icon {
+            font-size: 2rem;
+            animation: heartBeat 1.3s ease-in-out infinite;
+            filter: drop-shadow(0 0 8px #ff4d6d);
+        }
+
+        .center-core .core-text {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #ffffff;
+            text-shadow: 0 0 10px var(--primary-pink);
+            margin-top: 2px;
+        }
+
+        /* Container của toàn bộ vòng ảnh xoay */
+        .orbit-container {
+            position: absolute;
+            width: calc(var(--orbit-radius) * 2);
+            height: calc(var(--orbit-radius) * 2);
+            border-radius: 50%;
+            border: 1px dashed rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 40px rgba(155, 81, 224, 0.2);
+            animation: rotateOrbit 30s linear infinite;
+            animation-play-state: running;
+        }
+
+        .orbit-section:hover .orbit-container {
+            animation-play-state: paused;
+        }
+
+        /* Khung chứa từng ảnh lẻ */
+        .orbit-item {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: var(--img-size);
+            height: var(--img-size);
+            margin-top: calc(-1 * var(--img-size) / 2);
+            margin-left: calc(-1 * var(--img-size) / 2);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+        }
+
+        .orbit-item-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            padding: 3px;
+            background: var(--gold-gradient);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 126, 179, 0.5);
+            /* Triệt tiêu lực xoay của cha để ảnh luôn đứng thẳng */
+            animation: counterRotate 30s linear infinite;
+            animation-play-state: inherit;
+            overflow: hidden;
+        }
+
+        .orbit-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        /* Effect khi hover vào 1 ảnh riêng lẻ */
+        .orbit-item:hover {
+            z-index: 10;
+            transform: scale(1.35) !important;
+        }
+
+        .orbit-item:hover .orbit-item-inner {
+            box-shadow: 0 0 25px #ffd700, 0 0 35px #ff758c;
+        }
+
+        /* vị trí đặt 7 ảnh xung quanh chu vi (360 deg / 7 ≈ 51.428 deg) */
+        .orbit-item:nth-child(1) { transform: rotate(0deg) translate(var(--orbit-radius)) rotate(0deg); }
+        .orbit-item:nth-child(2) { transform: rotate(51.428deg) translate(var(--orbit-radius)) rotate(-51.428deg); }
+        .orbit-item:nth-child(3) { transform: rotate(102.856deg) translate(var(--orbit-radius)) rotate(-102.856deg); }
+        .orbit-item:nth-child(4) { transform: rotate(154.284deg) translate(var(--orbit-radius)) rotate(-154.284deg); }
+        .orbit-item:nth-child(5) { transform: rotate(205.712deg) translate(var(--orbit-radius)) rotate(-205.712deg); }
+        .orbit-item:nth-child(6) { transform: rotate(257.14deg) translate(var(--orbit-radius)) rotate(-257.14deg); }
+        .orbit-item:nth-child(7) { transform: rotate(308.568deg) translate(var(--orbit-radius)) rotate(-308.568deg); }
+
+        .wishes-section {
+            width: 100%;
+            max-width: 800px;
+            margin-top: 10px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 35px 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            text-align: center;
+        }
+
+        .wish-card {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.75rem;
+            line-height: 1.8;
+            color: #fff6f9;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .wish-card p {
+            margin-bottom: 15px;
+        }
+
+        .wish-author {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold-accent);
+            display: block;
+            margin-top: 15px;
+        }
+
+        .music-player {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(20, 5, 30, 0.75);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 8px 16px 8px 10px;
+            border-radius: 40px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .music-player:hover {
+            box-shadow: 0 10px 30px rgba(255, 117, 140, 0.4);
+            border-color: rgba(255, 117, 140, 0.5);
+        }
+
+        .music-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-pink), var(--rose-red));
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(230, 57, 70, 0.4);
+            transition: transform 0.2s ease;
+        }
+
+        .music-btn:active {
+            transform: scale(0.95);
+        }
+
+        .sound-wave {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 18px;
+        }
+
+        .wave-bar {
+            width: 3px;
+            height: 100%;
+            background: var(--secondary-pink);
+            border-radius: 3px;
+            animation: wave 1.2s ease-in-out infinite alternate;
+            animation-play-state: paused;
+        }
+
+        .wave-bar:nth-child(1) { height: 40%; animation-delay: 0.1s; }
+        .wave-bar:nth-child(2) { height: 100%; animation-delay: 0.3s; }
+        .wave-bar:nth-child(3) { height: 60%; animation-delay: 0.2s; }
+        .wave-bar:nth-child(4) { height: 80%; animation-delay: 0.4s; }
+
+        .music-player.playing .wave-bar {
+            animation-play-state: running;
+        }
+
+        .music-info {
+            font-size: 0.75rem;
+            color: #ddd;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .music-title {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid var(--gold-accent);
+            box-shadow: 0 0 30px rgba(255, 117, 140, 0.6);
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.show .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-content img {
+            width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            display: block;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 201;
+            text-shadow: 0 0 10px #000;
+        }
+
+        @keyframes rotateOrbit {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes counterRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(-360deg); }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 20px rgba(255, 117, 140, 0.6), inset 0 0 10px rgba(255, 215, 0, 0.4); }
+            100% { box-shadow: 0 0 45px rgba(255, 117, 140, 1), 0 0 15px rgba(255, 215, 0, 0.8), inset 0 0 20px rgba(255, 215, 0, 0.7); }
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.25); }
+        }
+
+        @keyframes wave {
+            0% { height: 20%; }
+            100% { height: 100%; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --orbit-radius: 125px;
+                --img-size: 65px;
+            }
+
+            .main-title {
+                font-size: 1.8rem;
+            }
+
+            .sub-title {
+                font-size: 1.5rem;
+            }
+
+            .orbit-section {
+                height: 360px;
+            }
+
+            .center-core {
+                width: 95px;
+                height: 95px;
+            }
+
+            .center-core .heart-icon {
+                font-size: 1.5rem;
+            }
+
+            .center-core .core-text {
+                font-size: 1rem;
+            }
+
+            .wishes-section {
+                padding: 25px 20px;
+            }
+
+            .wish-card {
+                font-size: 1.35rem;
+            }
+
+            .music-player {
+                bottom: 15px;
+                right: 15px;
+                padding: 6px 12px 6px 8px;
+            }
+
+            .music-info {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                --orbit-radius: 105px;
+                --img-size: 55px;
+            }
+            
+            .orbit-section {
+                height: 310px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Canvas hiệu ứng hạt rơi -->
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="container">
+        <!-- 1. TIÊU ĐỀ THIỆP -->
+        <header>
+            <div class="sub-title">Tôn vinh vẻ đẹp Phụ Nữ</div>
+            <h1 class="main-title">Chúc Mừng Ngày Phụ Nữ Việt Nam 20/10</h1>
+            <div class="divider"></div>
+        </header>
+
+        <!-- 2. VÒNG TRÒN ẢNH XOAY (ORBIT CAROUSEL) -->
+        <div class="orbit-section" id="orbitSection">
+            <div class="center-core">
+                <span class="heart-icon">🌹</span>
+                <span class="core-text">20/10 ❤️</span>
+            </div>
+
+            <div class="orbit-container" id="orbitContainer">
+                <div class="orbit-item" data-index="1">
+                    <div class="orbit-item-inner">
+                        <img src="img1.jpg" alt="Phụ nữ Việt Nam 1" >
+                    </div>
+                </div>
+                <div class="orbit-item" data-index="2">
+                    <div class="orbit-item-inner">
+                        <img src="img2.jpg" alt="Phụ nữ Việt Nam 2" >
+                    </div>
+                </div>
+                <div class="orbit-item" data-index="3">
+                    <div class="orbit-item-inner">
+                        <img src="img3.jpg" alt="Phụ nữ Việt Nam 3" >
+                    </div>
+                </div>
+                <div class="orbit-item" data-index="4">
+                    <div class="orbit-item-inner">
+                        <img src="img4.jpg" alt="Phụ nữ Việt Nam 4" >
+                    </div>
+                </div>
+                <div class="orbit-item" data-index="5">
+                    <div class="orbit-item-inner">
+                        <img src="img5.jpg" alt="Phụ nữ Việt Nam 5" >
+                    </div>
+                </div>
+                <div class="orbit-item" data-index="6">
+                    <div class="orbit-item-inner">
+                        <img src="nanh1.jpg" alt="Phụ nữ Việt Nam 6" ">
+                    </div>
+                </div>
+                <div class="orbit-item" data-index="7">
+                    <div class="orbit-item-inner">
+                        <img src="img7.jpg" alt="Phụ nữ Việt Nam 7" >
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. KHU VỰC CHỈ MỘT LỜI CHÚC DUY NHẤT -->
+        <div class="wishes-section">
+            <div class="wish-card">
+                <p>"Cảm ơn vì đã luôn mang đến dịu dàng, ấm áp. Nhân ngày Phụ nữ Việt Nam 20/10, chúc bạn luôn bình an, hạnh phúc và mãi là phiên bản rực rỡ nhất của chính mình!"</p>
+                <span class="wish-author"> Gửi trọn yêu thương đến Ánh </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. FLOATING AUDIO PLAYER -->
+    <div class="music-player" id="musicPlayer">
+        <button class="music-btn" id="musicToggleBtn" title="Bật/Tắt nhạc">
+            <span id="musicIcon">🎵</span>
+        </button>
+        <div class="music-info">
+            <span class="music-title">Sound 20/10</span>
+            <div class="sound-wave">
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="bgMusic" loop preload="auto" >
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-piano-112181.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- 5. MODAL POPUP PHÓNG TO ẢNH -->
+    <div class="modal" id="imageModal">
+        <span class="close-modal" id="closeModal">&times;</span>
+        <div class="modal-content">
+            <img id="modalImg" src="" alt="Ảnh phóng to">
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            /* --------------------------------------------------------------------------
+               1. HIỆU ỨNG CANVAS: CÁNH HOA & TRÁI TIM RƠI (PARTICLE SYSTEM)
+               -------------------------------------------------------------------------- */
+            const canvas = document.getElementById('particles-canvas');
+            const ctx = canvas.getContext('2d');
+
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            class Particle {
+                constructor() {
+                    this.reset();
+                }
+
+                reset() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * -height;
+                    this.size = Math.random() * 12 + 8;
+                    this.speedY = Math.random() * 1.5 + 0.8;
+                    this.speedX = Math.random() * 1 - 0.5;
+                    this.angle = Math.random() * Math.PI * 2;
+                    this.spin = (Math.random() - 0.5) * 0.03;
+                    this.opacity = Math.random() * 0.7 + 0.3;
+                    this.type = Math.random() > 0.4 ? 'petal' : 'heart';
+                    const colors = ['#ff758c', '#ff7eb3', '#ff4d6d', '#e63946', '#f3a683'];
+                    this.color = colors[Math.floor(Math.random() * colors.length)];
+                }
+
+                update() {
+                    this.y += this.speedY;
+                    this.x += Math.sin(this.angle) * 0.8 + this.speedX;
+                    this.angle += this.spin;
+
+                    if (this.y > height + 20) {
+                        this.reset();
+                        this.y = -10;
+                    }
+                }
+
+                draw() {
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate(this.angle);
+                    ctx.globalAlpha = this.opacity;
+                    ctx.fillStyle = this.color;
+
+                    if (this.type === 'petal') {
+                        ctx.beginPath();
+                        ctx.ellipse(0, 0, this.size / 2, this.size, Math.PI / 4, 0, 2 * Math.PI);
+                        ctx.fill();
+                    } else {
+                        ctx.beginPath();
+                        const topCurveHeight = this.size * 0.3;
+                        ctx.moveTo(0, topCurveHeight);
+                        ctx.bezierCurveTo(0, 0, -this.size / 2, 0, -this.size / 2, topCurveHeight);
+                        ctx.bezierCurveTo(-this.size / 2, (this.size + topCurveHeight) / 2, 0, this.size, 0, this.size);
+                        ctx.bezierCurveTo(0, this.size, this.size / 2, (this.size + topCurveHeight) / 2, this.size / 2, topCurveHeight);
+                        ctx.bezierCurveTo(this.size / 2, 0, 0, 0, 0, topCurveHeight);
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+
+                    ctx.restore();
+                }
+            }
+
+            const particlesArray = [];
+            const particleCount = window.innerWidth < 768 ? 35 : 65;
+
+            for (let i = 0; i < particleCount; i++) {
+                particlesArray.push(new Particle());
+            }
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, width, height);
+                particlesArray.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                requestAnimationFrame(animateParticles);
+            }
+            animateParticles();
+
+            /* --------------------------------------------------------------------------
+               2. ĐIỀU KHIỂN ÂM NHẠC BẰNG BẬT/TẮT (AUDIO CONTROLLER)
+               -------------------------------------------------------------------------- */
+            const bgMusic = document.getElementById('bgMusic');
+            const musicToggleBtn = document.getElementById('musicToggleBtn');
+            const musicPlayer = document.getElementById('musicPlayer');
+            const musicIcon = document.getElementById('musicIcon');
+            let isPlaying = false;
+
+            function toggleMusic() {
+                if (isPlaying) {
+                    bgMusic.pause();
+                    musicPlayer.classList.remove('playing');
+                    musicIcon.textContent = '🎵';
+                } else {
+                    bgMusic.play().then(() => {
+                        musicPlayer.classList.add('playing');
+                        musicIcon.textContent = '🔊';
+                    }).catch(err => {
+                        console.log("Trình duyệt chặn tự động phát âm thanh:", err);
+                    });
+                }
+                isPlaying = !isPlaying;
+            }
+
+            musicToggleBtn.addEventListener('click', toggleMusic);
+
+            const firstInteraction = () => {
+                if (!isPlaying) {
+                    toggleMusic();
+                }
+                document.removeEventListener('click', firstInteraction);
+            };
+            document.addEventListener('click', firstInteraction);
+
+            /* --------------------------------------------------------------------------
+               3. PHÓNG TO ẢNH KHI BẤM VÀO TỪNG HÌNH TRONG VÒNG XOAY
+               -------------------------------------------------------------------------- */
+            const orbitItems = document.querySelectorAll('.orbit-item');
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImg');
+            const closeModal = document.getElementById('closeModal');
+
+            orbitItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const img = item.querySelector('img');
+                    if (img) {
+                        modalImg.src = img.src;
+                        modal.classList.add('show');
+                    }
+                });
+            });
+
+            closeModal.addEventListener('click', () => {
+                modal.classList.remove('show');
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('show');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
